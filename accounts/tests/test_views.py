@@ -138,7 +138,7 @@ class LogoutViewTests(TestCase):
         self.client.force_authenticate(user=self.user)
         self.client.cookies["refresh_token"] = "dummy"
         response = self.client.post(self.url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
 
 class TokenRefreshViewTests(TestCase):

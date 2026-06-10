@@ -1,4 +1,5 @@
 import random
+import re
 import string
 
 from shortener.models import ShortenedURL
@@ -35,3 +36,16 @@ def validate_custom_slug(slug: str) -> str | None:
     ).exists():
         return "This slug is already taken."
     return None
+
+
+def slugify_title(title: str, exclude_id: int | None = None) -> str:
+    slug = re.sub(r"[^a-z0-9-]", "", title.lower().replace(" ", "-"))
+    slug = re.sub(r"-+", "-", slug).strip("-")
+    if len(slug) < 3:
+        slug = (slug or "link") + "-" + generate_short_code(4)
+    qs = ShortenedURL.objects.filter(custom_slug=slug, is_active=True)
+    if exclude_id:
+        qs = qs.exclude(id=exclude_id)
+    if qs.exists():
+        slug = slug + "-" + generate_short_code(4)
+    return slug

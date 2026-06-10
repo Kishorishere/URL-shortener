@@ -142,7 +142,7 @@ def dashboard_detail(request, code):
         clicked_at__gte=thirty_days_ago
     ).count()
     qr_png = generate_qr_base64(
-        request.build_absolute_uri(f"/{url.active_code}")
+        f"{settings.BASE_URL}/{url.active_code}"
     )
     clicks_over_time_list = list(clicks_over_time)
     max_click_count = max(
@@ -156,7 +156,7 @@ def dashboard_detail(request, code):
         "by_country": list(by_country),
         "by_device": list(by_device),
         "total_clicks_30d": total_clicks_30d,
-        "short_url": request.build_absolute_uri(f"/{url.active_code}"),
+        "short_url": f"{settings.BASE_URL}/{url.active_code}",
         "qr_png": qr_png,
     })
 
@@ -239,7 +239,7 @@ def qr_download(request, code, format="png"):
         user=request.user,
         deleted_at__isnull=True,
     )
-    full_url = request.build_absolute_uri(f"/{url.active_code}")
+    full_url = f"{settings.BASE_URL}/{url.active_code}"
     if format == "svg":
         svg_bytes = generate_qr_svg(full_url)
         return HttpResponse(svg_bytes, content_type="image/svg+xml")

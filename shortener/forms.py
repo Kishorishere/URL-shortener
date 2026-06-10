@@ -86,6 +86,9 @@ class ShortenedURLForm(forms.ModelForm):
         instance = super().save(commit=False)
         if not instance.short_code:
             instance.short_code = generate_short_code()
+        if not instance.custom_slug and instance.title:
+            from shortener.services.shortcode import slugify_title
+            instance.custom_slug = slugify_title(instance.title, exclude_id=instance.pk)
         if self.cleaned_data.get("password"):
             instance.set_password(self.cleaned_data["password"])
         if commit:

@@ -16,13 +16,20 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
+from django.http import JsonResponse
 from django.urls import include, path
 
 from accounts import views as accounts_views
 from shortener import views as shortener_views
 
+
+def health_check(request):
+    return JsonResponse({"status": "ok"})
+
+
 urlpatterns = [
     path('', accounts_views.root_redirect, name='root'),
+    path('health/', health_check, name='health_check'),
     path('admin/', admin.site.urls),
     path('api/auth/', include('accounts.urls', namespace='accounts')),
     path('api/v1/', include('shortener.api_urls')),

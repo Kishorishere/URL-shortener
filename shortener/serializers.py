@@ -1,10 +1,11 @@
 import re
 
+from django.conf import settings
 from django.utils import timezone
 from rest_framework import serializers
 
 from shortener.models import APIKey, ClickEvent, Domain, ShortenedURL, Tag
-from shortener.services.shortcode import generate_short_code, validate_custom_slug
+from shortener.services.shortcode import generate_short_code, slugify_title, validate_custom_slug
 from shortener.services.cleaner import normalize_url
 
 UTM_FIELDS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"]
@@ -53,10 +54,7 @@ class ShortenedURLSerializer(serializers.ModelSerializer):
         ]
 
     def get_short_url(self, obj):
-        request = self.context.get("request")
-        if request:
-            return request.build_absolute_uri(f"/{obj.active_code}")
-        return f"/{obj.active_code}"
+        return f"{settings.BASE_URL}/{obj.active_code}"
 
     def validate_original_url(self, value):
         if not value:
@@ -135,6 +133,8 @@ class ShortenedURLCreateSerializer(serializers.ModelSerializer):
         tag_ids = validated_data.pop("tag_ids", [])
         password = validated_data.pop("password", "")
         validated_data["short_code"] = generate_short_code()
+        if not validated_data.get("custom_slug") and validated_data.get("title"):
+            validated_data["custom_slug"] = slugify_title(validated_data["title"])
         url = ShortenedURL.objects.create(**validated_data)
         if password:
             url.set_password(password)

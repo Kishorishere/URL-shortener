@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, status, viewsets
@@ -74,7 +75,7 @@ class ShortenedURLViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"])
     def qr(self, request, pk=None):
         url = self.get_object()
-        full_url = request.build_absolute_uri(f"/{url.active_code}")
+        full_url = f"{settings.BASE_URL}/{url.active_code}"
         fmt = request.query_params.get("format", "png")
         if fmt == "svg":
             svg = generate_qr_svg(full_url)
