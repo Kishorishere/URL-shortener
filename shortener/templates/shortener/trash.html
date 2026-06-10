@@ -1,0 +1,36 @@
+{% extends "shortener/base.html" %}
+{% block title %}Trash - URL Shortener{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">Trash</h1>
+<div class="bg-white rounded shadow overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+            <tr>
+                <th class="text-left p-3">Short URL</th>
+                <th class="text-left p-3">Deleted</th>
+                <th class="text-right p-3">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y">
+            {% for url in urls %}
+            <tr class="hover:bg-gray-50 text-gray-500">
+                <td class="p-3 font-mono">/{{ url.active_code }}</td>
+                <td class="p-3">{{ url.deleted_at|date:"M j, Y" }}</td>
+                <td class="p-3 text-right">
+                    {% if url.deleted_at > recovery_window %}
+                    <form method="post" action="{% url 'shortener:dashboard_restore' code=url.active_code %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-green-600 hover:underline">Restore</button>
+                    </form>
+                    {% else %}
+                    <span class="text-gray-400">Expired</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="p-6 text-center text-gray-400">Trash is empty.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

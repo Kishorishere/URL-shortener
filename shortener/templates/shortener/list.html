@@ -1,0 +1,63 @@
+{% extends "shortener/base.html" %}
+{% block title %}My Links - URL Shortener{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">My Links</h1>
+    <a href="{% url 'shortener:dashboard_create' %}" class="bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800">New Link</a>
+</div>
+
+<div class="bg-white rounded shadow overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+            <tr>
+                <th class="text-left p-3">Short URL</th>
+                <th class="text-left p-3">Original</th>
+                <th class="text-center p-3">Clicks</th>
+                <th class="text-center p-3">Status</th>
+                <th class="text-right p-3">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y">
+            {% for url in urls %}
+            <tr class="hover:bg-gray-50">
+                <td class="p-3">
+                    <a href="{% url 'shortener:dashboard_detail' code=url.active_code %}" class="text-gray-700 font-mono text-sm">
+                        /{{ url.active_code }}
+                    </a>
+                </td>
+                <td class="p-3 text-gray-500 max-w-xs truncate">{{ url.original_url }}</td>
+                <td class="p-3 text-center">{{ url.click_count }}</td>
+                <td class="p-3 text-center">
+                    {% if url.is_expired %}
+                        <span class="text-red-600 text-xs bg-red-50 px-2 py-1 rounded">Expired</span>
+                    {% elif url.is_password_protected %}
+                        <span class="text-yellow-600 text-xs bg-yellow-50 px-2 py-1 rounded">Protected</span>
+                    {% else %}
+                        <span class="text-green-600 text-xs bg-green-50 px-2 py-1 rounded">Active</span>
+                    {% endif %}
+                </td>
+                <td class="p-3 text-right space-x-2">
+                    <a href="{% url 'shortener:dashboard_edit' code=url.active_code %}" class="text-gray-700 hover:underline">Edit</a>
+                    <a href="{% url 'shortener:dashboard_detail' code=url.active_code %}" class="text-gray-600 hover:underline">Stats</a>
+                    <a href="{% url 'shortener:dashboard_delete' code=url.active_code %}" class="text-red-600 hover:underline">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="p-6 text-center text-gray-400">No links yet. <a href="{% url 'shortener:dashboard_create' %}" class="text-gray-700">Create one!</a></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if urls.has_other_pages %}
+<div class="mt-4 flex justify-center gap-2">
+    {% if urls.has_previous %}
+        <a href="?page={{ urls.previous_page_number }}" class="px-3 py-1 bg-white border rounded hover:bg-gray-50">Previous</a>
+    {% endif %}
+    <span class="px-3 py-1 text-gray-500">Page {{ urls.number }} of {{ urls.paginator.num_pages }}</span>
+    {% if urls.has_next %}
+        <a href="?page={{ urls.next_page_number }}" class="px-3 py-1 bg-white border rounded hover:bg-gray-50">Next</a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

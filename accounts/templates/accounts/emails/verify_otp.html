@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; background: #f3f4f6; }
+        .container { max-width: 480px; margin: 40px auto; background: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .otp { font-size: 36px; font-weight: 700; letter-spacing: 8px; text-align: center; color: #374151; margin: 24px 0; }
+        .btn { display: inline-block; background: #374151; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; margin: 16px 0; }
+        .footer { margin-top: 24px; font-size: 12px; color: #9ca3af; text-align: center; }
+        .divider { border: none; border-top: 1px solid #e5e7eb; margin: 24px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="font-size:20px; margin:0 0 8px;">Verify your email</h1>
+        <p style="color:#6b7280; margin:0 0 16px;">Use the code below or click the link to activate your account.</p>
+
+        <div class="otp">{{ otp }}</div>
+
+        <p style="text-align:center; color:#6b7280; font-size:14px;">This code expires in 10 minutes.</p>
+
+        <hr class="divider">
+
+        <p style="text-align:center; color:#6b7280; font-size:14px;">Or click the button below:</p>
+        <p style="text-align:center;">
+            <a href="{{ verification_url }}" class="btn">Verify email</a>
+        </p>
+
+        <div class="footer">
+            <p>If you didn't create an account, you can ignore this email.</p>
+        </div>
+    </div>
+</body>
+</html>
