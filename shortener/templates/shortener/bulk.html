@@ -1,0 +1,64 @@
+{% load static %}
+{% extends "shortener/base.html" %}
+{% block title %}Bulk Upload - URL Shortener{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">Bulk Upload</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white rounded shadow p-6">
+        <h2 class="text-lg font-semibold mb-3">Upload CSV</h2>
+        <p class="text-gray-500 text-sm mb-4">
+            Upload a CSV file with at least a <code class="bg-gray-100 px-1 rounded">url</code> column.
+            Optional columns: <code class="bg-gray-100 px-1 rounded">title</code>,
+            <code class="bg-gray-100 px-1 rounded">custom_slug</code>,
+            <code class="bg-gray-100 px-1 rounded">password</code>,
+            <code class="bg-gray-100 px-1 rounded">expires_at</code>.
+        </p>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.csv_file }}
+            {% if form.csv_file.errors %}
+                <p class="text-red-500 text-xs mt-1">{{ form.csv_file.errors.0 }}</p>
+            {% endif %}
+            <button type="submit" class="mt-4 bg-gray-700 text-white px-6 py-2 rounded hover:bg-gray-800 w-full">Upload & Shorten</button>
+        </form>
+    </div>
+
+    <div class="bg-white rounded shadow p-6">
+        <h2 class="text-lg font-semibold mb-3">Sample Format</h2>
+        <p class="text-gray-500 text-sm mb-3">
+            Download the sample CSV to see the expected format:
+        </p>
+        <a href="{% static 'shortener/bulk_upload_sample.csv' %}"
+           class="inline-flex items-center gap-2 bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 text-sm">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Download Sample CSV
+        </a>
+
+        <div class="mt-4 overflow-x-auto">
+            <table class="w-full text-xs border-collapse">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="p-2 border text-left font-medium text-gray-600">url</th>
+                        <th class="p-2 border text-left font-medium text-gray-600">title</th>
+                        <th class="p-2 border text-left font-medium text-gray-600">custom_slug</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-gray-500">
+                        <td class="p-2 border truncate max-w-40">https://example.com/page</td>
+                        <td class="p-2 border text-gray-400 italic">My Page</td>
+                        <td class="p-2 border text-gray-400 italic">my-slug</td>
+                    </tr>
+                    <tr class="text-gray-500">
+                        <td class="p-2 border truncate max-w-40">https://example.com/other</td>
+                        <td class="p-2 border text-gray-400 italic" colspan="2">(optional)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

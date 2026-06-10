@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+db.sqlite3
+e2e/node_modules/
+e2e/test_db.sqlite3
+e2e/test-results/
+e2e/.server-pid
+test-results/
