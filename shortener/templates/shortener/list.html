@@ -10,6 +10,7 @@
     <table class="w-full text-sm">
         <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
             <tr>
+                <th class="text-left p-3">Title</th>
                 <th class="text-left p-3">Short URL</th>
                 <th class="text-left p-3">Original</th>
                 <th class="text-center p-3">Clicks</th>
@@ -21,9 +22,19 @@
             {% for url in urls %}
             <tr class="hover:bg-gray-50">
                 <td class="p-3">
-                    <a href="{% url 'shortener:dashboard_detail' code=url.active_code %}" class="text-gray-700 font-mono text-sm">
-                        /{{ url.active_code }}
+                    <a href="{% url 'shortener:dashboard_detail' code=url.active_code %}" class="text-gray-700 font-medium">
+                        {{ url.title|default:url.active_code }}
                     </a>
+                </td>
+                <td class="p-3">
+                    <div class="flex items-center gap-2">
+                        <a href="{{ base_url }}/{{ url.active_code }}" target="_blank" class="text-gray-500 font-mono text-sm truncate max-w-[200px]">
+                            {{ base_url }}/{{ url.active_code }}
+                        </a>
+                        <button onclick="copyUrl(this, '{{ base_url }}/{{ url.active_code }}')" class="text-gray-400 hover:text-gray-600 shrink-0" title="Copy short URL">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        </button>
+                    </div>
                 </td>
                 <td class="p-3 text-gray-500 max-w-xs truncate">{{ url.original_url }}</td>
                 <td class="p-3 text-center">{{ url.click_count }}</td>
@@ -43,7 +54,7 @@
                 </td>
             </tr>
             {% empty %}
-            <tr><td colspan="5" class="p-6 text-center text-gray-400">No links yet. <a href="{% url 'shortener:dashboard_create' %}" class="text-gray-700">Create one!</a></td></tr>
+            <tr><td colspan="6" class="p-6 text-center text-gray-400">No links yet. <a href="{% url 'shortener:dashboard_create' %}" class="text-gray-700">Create one!</a></td></tr>
             {% endfor %}
         </tbody>
     </table>
@@ -60,4 +71,18 @@
     {% endif %}
 </div>
 {% endif %}
+
+<script>
+function copyUrl(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+        const original = btn.innerHTML;
+        btn.innerHTML = '<span class="text-xs text-green-600">Copied!</span>';
+        btn.classList.add('pointer-events-none');
+        setTimeout(() => {
+            btn.innerHTML = original;
+            btn.classList.remove('pointer-events-none');
+        }, 1500);
+    });
+}
+</script>
 {% endblock %}

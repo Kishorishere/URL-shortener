@@ -6,6 +6,7 @@
     <table class="w-full text-sm">
         <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
             <tr>
+                <th class="text-left p-3">Title</th>
                 <th class="text-left p-3">Short URL</th>
                 <th class="text-left p-3">Deleted</th>
                 <th class="text-right p-3">Actions</th>
@@ -14,7 +15,8 @@
         <tbody class="divide-y">
             {% for url in urls %}
             <tr class="hover:bg-gray-50 text-gray-500">
-                <td class="p-3 font-mono">/{{ url.active_code }}</td>
+                <td class="p-3">{{ url.title|default:url.active_code }}</td>
+                <td class="p-3 font-mono text-sm">{{ base_url }}/{{ url.active_code }}</td>
                 <td class="p-3">{{ url.deleted_at|date:"M j, Y" }}</td>
                 <td class="p-3 text-right">
                     {% if url.deleted_at > recovery_window %}
@@ -28,7 +30,7 @@
                 </td>
             </tr>
             {% empty %}
-            <tr><td colspan="3" class="p-6 text-center text-gray-400">Trash is empty.</td></tr>
+            <tr><td colspan="4" class="p-6 text-center text-gray-400">Trash is empty.</td></tr>
             {% endfor %}
         </tbody>
     </table>

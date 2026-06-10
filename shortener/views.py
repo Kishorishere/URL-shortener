@@ -77,6 +77,7 @@ def dashboard_list(request):
     return render(request, "shortener/list.html", {
         "urls": urls_page,
         "paginator": paginator,
+        "base_url": settings.BASE_URL,
     })
 
 
@@ -213,6 +214,7 @@ def dashboard_trash(request):
     return render(request, "shortener/trash.html", {
         "urls": urls,
         "recovery_window": recovery_window,
+        "base_url": settings.BASE_URL,
     })
 
 
